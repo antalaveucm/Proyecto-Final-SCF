@@ -2,7 +2,7 @@
 #include <WiFiClientSecure.h>
 #include <PubSubClient.h>
 #include <ESP32Servo.h>
-#include "DHTesp.h"
+#include <DHTesp.h>
 #include <ArduinoJson.h>
 #include <NewPing.h>
 #include "credentials.h"
@@ -11,21 +11,20 @@
 // Pines y configuración
 #define DHT_PIN 15
 #define POTENTIOMETER_PIN 35
-const int servoPin = 18;
-int potValue = 0;
-const int UltrasonicPin = 5;
+#define servoPin 18
+#define UltrasonicPin 5
+
+#define TOPIC_DHT "/sensors/dht11"
+#define TOPIC_US "/sensors/ultrasonic"
+#define TOPIC_POT "/sensors/potentiometer"
+
 const int MaxDistance = 200;
+int potValue = 0;
 
 NewPing sonar(UltrasonicPin, UltrasonicPin, MaxDistance);
 
 DHTesp dhtSensor;
 Servo servo;
-
-
-
-#define TOPIC_DHT "/sensors/dht11"
-#define TOPIC_US "/sensors/ultrasonic"
-#define TOPIC_POT "/sensors/potentiometer"
 
 // Configuración del servidor MQTT
 const char* mqtt_server = "192.168.1.19";
