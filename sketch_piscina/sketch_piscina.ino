@@ -5,7 +5,7 @@
 #include "DHTesp.h"
 #include <ArduinoJson.h>
 #include <NewPing.h>
-// #include "credentials.h"
+#include "credentials.h"
 
 
 // Pines y configuración
