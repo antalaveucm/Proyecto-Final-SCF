@@ -2,29 +2,36 @@
 #include <WiFiClientSecure.h>
 #include <PubSubClient.h>
 #include <ESP32Servo.h>
-#include <DHTesp.h>
+#include "DHTesp.h"
 #include <ArduinoJson.h>
 #include <NewPing.h>
-#include "credentials.h"
+// #include "credentials.h"
 
 
 // Pines y configuración
 #define DHT_PIN 15
 #define POTENTIOMETER_PIN 35
-#define servoPin 18
-#define UltrasonicPin 5
-
-#define TOPIC_DHT "/sensors/dht11"
-#define TOPIC_US "/sensors/ultrasonic"
-#define TOPIC_POT "/sensors/potentiometer"
-
-const int MaxDistance = 200;
+const int servoPin = 18;
 int potValue = 0;
+const int UltrasonicPin = 5;
+const int MaxDistance = 200;
+#define BUTTON_PIN 4
+volatile bool stopSystem = false; // Bandera para detener el sistema
+TaskHandle_t taskHandles[5];      // Handles de las tareas para suspender/reanudar
+
+const char* ssid = "MiFibra-4B1E";
+const char* password = "QF6oM3q7";
 
 NewPing sonar(UltrasonicPin, UltrasonicPin, MaxDistance);
 
 DHTesp dhtSensor;
 Servo servo;
+
+
+
+#define TOPIC_DHT "/sensors/dht11"
+#define TOPIC_US "/sensors/ultrasonic"
+#define TOPIC_POT "/sensors/potentiometer"
 
 // Configuración del servidor MQTT
 const char* mqtt_server = "192.168.1.19";
@@ -36,6 +43,23 @@ float phValue = 7;
 
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
+
+void IRAM_ATTR handleButtonPress() {
+    stopSystem = !stopSystem; // Cambiar estado de la bandera
+    if (stopSystem) {
+        // Suspender tareas
+        for (int i = 0; i < 5; i++) {
+            vTaskSuspend(taskHandles[i]);
+        }
+        Serial.println("Sistema detenido.");
+    } else {
+        // Reanudar tareas
+        for (int i = 0; i < 5; i++) {
+            vTaskResume(taskHandles[i]);
+        }
+        Serial.println("Sistema reanudado.");
+    }
+}
 
 // Funcion para enviar valores a traves de MQTT
 void publishMQTT(char* topic, float value){
@@ -112,14 +136,14 @@ void taskServo(void* parameter) {
   int pos = 0;  // Posición inicial del servo
 
   while (true) {
-    if (water_level < 90 && pos < 180) {
+    if (water_level < 90 && pos < 180) { // Si el nivel de agua es menor a 90% y la posición del servo es menor a 180 (cerrado)
       pos++;
-      servo.write(pos);
+      servo.write(pos); //vamos abriendo la valvula
       vTaskDelay(15 / portTICK_PERIOD_MS);
-    } else if (water_level > 95 && pos > 0) {
+    } else if (water_level > 95 && pos > 0) { // Si el nivel de agua es mayor a 95% y la posición del servo es mayor a 0 (abierto)
       pos--;
       servo.write(pos);
-      vTaskDelay(15 / portTICK_PERIOD_MS);
+      vTaskDelay(15 / portTICK_PERIOD_MS); //vamos cerrando la valvula
     }
   }
 }
@@ -172,6 +196,8 @@ void taskUltrasonido(void* parameter) {
 void setup() {
   Serial.begin(115200);
 
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), handleButtonPress, FALLING);
   // Configurar sensor DHT y servo
   dhtSensor.setup(DHT_PIN, DHTesp::DHT11);
   servo.attach(servoPin, 500, 2400);
@@ -182,13 +208,13 @@ void setup() {
   mqttConnect();
 
   // Crear las tareas de FreeRTOS
-  xTaskCreate(taskDHT, "Task DHT", 4096, NULL, 1, NULL);
-  xTaskCreate(taskServo, "Task Servo", 4096, NULL, 1, NULL);
-  xTaskCreate(taskWiFiMQTT, "Task WiFi/MQTT", 4096, NULL, 1, NULL);
-  xTaskCreate(taskPotenph, "Task Potentiometer ph", 2048, NULL, 1, NULL);
-  xTaskCreate(taskUltrasonido, "Task Distancia Agua", 4096, NULL, 1, NULL);
+  xTaskCreatePinnedToCore(taskDHT, "Task DHT", 4096, NULL, 1, &taskHandles[0], 1);
+  xTaskCreatePinnedToCore(taskServo, "Task Servo", 4096, NULL, 1, &taskHandles[1], 1);
+  xTaskCreatePinnedToCore(taskWiFiMQTT, "Task WiFi/MQTT", 4096, NULL, 1, &taskHandles[2], 0);
+  xTaskCreatePinnedToCore(taskPotenph, "Task Potentiometer ph", 4096, NULL, 1, &taskHandles[3], 1);
+  xTaskCreatePinnedToCore(taskUltrasonido, "Task Distancia Agua", 4096, NULL, 1, &taskHandles[4], 0);
 }
 
 void loop() {
-  
+
 }
