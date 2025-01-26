@@ -32,26 +32,125 @@
             "mode": "thresholds"
           },
           "mappings": [],
+          "max": 40,
+          "min": 15,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "purple",
                 "value": null
               },
               {
-                "color": "red",
-                "value": 80
+                "color": "blue",
+                "value": 20
+              },
+              {
+                "color": "dark-green",
+                "value": 25
+              },
+              {
+                "color": "green",
+                "value": 28
+              },
+              {
+                "color": "yellow",
+                "value": 30
+              },
+              {
+                "color": "dark-red",
+                "value": 35
               }
             ]
-          }
+          },
+          "unit": "celsius"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 4,
+        "h": 6,
+        "w": 5,
         "x": 0,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "query": "SELECT \"value\"\nFROM \"mqtt_consumer\"\nWHERE \"topic\" = '/sensors/dht11' \nORDER BY time desc\nLIMIT 1",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Temperatura",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "PA611B854BBFC0071"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 105,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 70
+              },
+              {
+                "color": "yellow",
+                "value": 80
+              },
+              {
+                "color": "dark-green",
+                "value": 90
+              },
+              {
+                "color": "green",
+                "value": 95
+              },
+              {
+                "color": "yellow",
+                "value": 100
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 5,
         "y": 0
       },
       "id": 5,
@@ -83,7 +182,7 @@
           "resultFormat": "time_series"
         }
       ],
-      "title": "Panel Title",
+      "title": "Nivel de agua",
       "type": "gauge"
     },
     {
@@ -97,24 +196,38 @@
             "mode": "thresholds"
           },
           "mappings": [],
+          "max": 14,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "blue",
+                "color": "dark-red",
                 "value": null
               },
               {
-                "color": "semi-dark-green",
-                "value": 20
+                "color": "#EAB839",
+                "value": 6.5
               },
               {
-                "color": "#EAB839",
-                "value": 22
+                "color": "light-green",
+                "value": 7
+              },
+              {
+                "color": "dark-green",
+                "value": 7.2
+              },
+              {
+                "color": "light-green",
+                "value": 7.6
+              },
+              {
+                "color": "orange",
+                "value": 8
               },
               {
                 "color": "dark-red",
-                "value": 25
+                "value": 9
               }
             ]
           }
@@ -122,12 +235,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 4,
-        "x": 4,
+        "h": 6,
+        "w": 5,
+        "x": 10,
         "y": 0
       },
-      "id": 3,
+      "id": 6,
       "options": {
         "minVizHeight": 75,
         "minVizWidth": 75,
@@ -146,13 +259,13 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
-          "query": "SELECT \"value\"\nFROM \"mqtt_consumer\"\nWHERE \"topic\" = '/sensors/dht11' \nORDER BY time desc\nLIMIT 1",
+          "query": "SELECT \"value\"\nFROM \"mqtt_consumer\"\nWHERE \"topic\" = '/sensors/potentiometer' \nORDER BY time desc\nLIMIT 1",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series"
         }
       ],
-      "title": "Panel Title",
+      "title": "pH",
       "type": "gauge"
     },
     {
@@ -182,20 +295,20 @@
               "viz": false
             },
             "insertNulls": false,
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
             },
             "thresholdsStyle": {
-              "mode": "off"
+              "mode": "area"
             }
           },
           "mappings": [],
@@ -203,15 +316,32 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "purple",
                 "value": null
               },
               {
-                "color": "red",
-                "value": 80
+                "color": "blue",
+                "value": 20
+              },
+              {
+                "color": "dark-green",
+                "value": 25
+              },
+              {
+                "color": "green",
+                "value": 28
+              },
+              {
+                "color": "#EAB839",
+                "value": 30
+              },
+              {
+                "color": "dark-red",
+                "value": 35
               }
             ]
-          }
+          },
+          "unit": "celsius"
         },
         "overrides": []
       },
@@ -219,12 +349,14 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 6
       },
       "id": 2,
       "options": {
         "legend": {
-          "calcs": [],
+          "calcs": [
+            "lastNotNull"
+          ],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
@@ -237,7 +369,7 @@
       "pluginVersion": "11.4.0",
       "targets": [
         {
-          "query": "SELECT mean(\"value\")\nFROM \"mqtt_consumer\" \nWHERE \"topic\" = '/sensors/dht11'\nAND $timeFilter \nGROUP BY time($__interval) fill(null)",
+          "query": "SELECT mean(\"value\") as temperature\nFROM \"mqtt_consumer\" \nWHERE \"topic\" = '/sensors/dht11'\nAND $timeFilter \nGROUP BY time($__interval) fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series"
@@ -273,14 +405,14 @@
               "viz": false
             },
             "insertNulls": false,
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -293,7 +425,6 @@
             {
               "options": {
                 "2": {
-                  "color": "dark-red",
                   "index": 0,
                   "text": "Cuidao"
                 }
@@ -301,40 +432,48 @@
               "type": "value"
             }
           ],
+          "max": 105,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "dark-red",
                 "value": null
               },
               {
                 "color": "yellow",
-                "value": 10
+                "value": 80
               },
               {
-                "color": "orange",
-                "value": 20
+                "color": "dark-green",
+                "value": 90
               },
               {
-                "color": "red",
-                "value": 30
+                "color": "green",
+                "value": 95
+              },
+              {
+                "color": "#EAB839",
+                "value": 100
               }
             ]
-          }
+          },
+          "unit": "percent"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 14
       },
       "id": 1,
       "options": {
         "legend": {
-          "calcs": [],
+          "calcs": [
+            "lastNotNull"
+          ],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
@@ -351,13 +490,138 @@
             "type": "influxdb",
             "uid": "PA611B854BBFC0071"
           },
-          "query": "SELECT mean(\"value\")\nFROM \"mqtt_consumer\"\nWHERE \"topic\" = '/sensors/ultrasonic' \nAND $timeFilter \nGROUP BY time($__interval) fill(null)",
+          "query": "SELECT mean(\"value\") as water_level\nFROM \"mqtt_consumer\"\nWHERE \"topic\" = '/sensors/ultrasonic' \nAND $timeFilter \nGROUP BY time($__interval) fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series"
         }
       ],
       "title": "Nivel de agua",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "PA611B854BBFC0071"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "area"
+            }
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-red",
+                "value": null
+              },
+              {
+                "color": "semi-dark-red",
+                "value": 6
+              },
+              {
+                "color": "light-yellow",
+                "value": 6.5
+              },
+              {
+                "color": "green",
+                "value": 7
+              },
+              {
+                "color": "dark-green",
+                "value": 7.2
+              },
+              {
+                "color": "green",
+                "value": 7.6
+              },
+              {
+                "color": "yellow",
+                "value": 7.8
+              },
+              {
+                "color": "semi-dark-red",
+                "value": 8
+              },
+              {
+                "color": "#e60707",
+                "value": 9
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 23
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "query": "SELECT mean(\"value\") as pH\nFROM \"mqtt_consumer\"\nWHERE \"topic\" = '/sensors/potentiometer' \nAND $timeFilter \nGROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "pH",
       "type": "timeseries"
     }
   ],
@@ -369,13 +633,13 @@
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Test1",
   "uid": "deavqc9cyic5cd",
-  "version": 24,
+  "version": 54,
   "weekStart": ""
 }
