@@ -19,9 +19,6 @@ const int MaxDistance = 200;
 volatile bool stopSystem = false; // Bandera para detener el sistema
 TaskHandle_t taskHandles[5];      // Handles de las tareas para suspender/reanudar
 
-const char* ssid = "MiFibra-4B1E";
-const char* password = "QF6oM3q7";
-
 NewPing sonar(UltrasonicPin, UltrasonicPin, MaxDistance);
 
 DHTesp dhtSensor;
