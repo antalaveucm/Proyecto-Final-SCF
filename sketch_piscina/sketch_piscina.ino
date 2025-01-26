@@ -34,7 +34,7 @@ Servo servo;
 #define TOPIC_POT "/sensors/potentiometer"
 
 // Configuración del servidor MQTT
-const char* mqtt_server = "192.168.1.19";
+
 const int mqtt_port = 1885;
 const char* mqtt_user = "admin";
 const char* mqtt_password = "admin";
